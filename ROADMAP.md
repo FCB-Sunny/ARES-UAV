@@ -1,0 +1,82 @@
+# ARES-UAV — Development Roadmap
+
+## Phase 0 — Environment & Foundation (current)
+
+**Goal:** Reproducible engineering baseline.
+
+- [x] Host analysis + `ENVIRONMENT_SETUP.md`
+- [x] WSL2 + Ubuntu 22.04 operational
+- [x] GitHub repository created
+- [ ] ROS 2 Humble installed and verified
+- [ ] Gazebo Harmonic launches
+- [ ] PX4 SITL `gz_x500` runs
+- [ ] MAVSDK arm / takeoff / land demo
+- [ ] WSL snapshot backup after success
+
+**Exit:** Single simulated UAV controllable via MAVSDK.
+
+---
+
+## Phase 1 — Foundation Flight (Week 1–2)
+
+**Goal:** One drone flies autonomously in simulation.
+
+- Repo module skeletons (`control/`, `simulation/`, …)
+- Scripted mission: arm → takeoff → waypoint → land
+- Record demo video / log
+
+**Exit:** Reproducible single-vehicle waypoint flight.
+
+---
+
+## Phase 2 — Autonomous Navigation (Week 3–4)
+
+**Goal:** Navigate with obstacles.
+
+- Path planning (start with A* or RRT*)
+- Obstacle avoidance
+- Return-to-home / battery-aware abort (basic)
+
+**Exit:** Start → avoid → goal → home.
+
+---
+
+## Phase 3 — Multi-Drone System (Month 2)
+
+**Goal:** 3–5 drones cooperate.
+
+- Multi-SITL bring-up (resource-aware on 16 GB host)
+- Communication + simple task allocation
+- Formation or sector search demo
+
+**Exit:** Swarm search mission demo.
+
+---
+
+## Phase 4 — AI Mission Commander (Month 3)
+
+**Goal:** Natural language → executed mission.
+
+- LLM API integration (cloud first)
+- Mission schema validation
+- Planner bridge from JSON → vehicle tasks
+
+**Exit:** “Find survivors in this area” style command runs end-to-end in sim.
+
+---
+
+## Phase 5 — Advanced Research (Month 4+)
+
+**Goal:** Research features after core stack is stable.
+
+- GPS-denied / VIO / SLAM experiments
+- RL navigation (cloud GPU later)
+- Digital twin concepts
+
+Only begin when Phases 0–3 are reliable.
+
+---
+
+## Tracking Rule
+
+Do not start Phase N+1 until Phase N exit criteria are checked off in this file.

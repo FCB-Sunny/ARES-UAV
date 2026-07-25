@@ -1,0 +1,61 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+*.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+ares-venv/
+.env
+.ENV
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# ROS 2 / colcon
+install/
+build/
+log/
+.colcon/
+
+# PX4 / firmware build artifacts (if cloned inside repo later)
+*.px4
+build_*
+*_sitl
+
+# Simulation / logs / media
+*.bag
+*.mcap
+*.ulg
+*.log
+logs/
+recordings/
+*.mp4
+*.avi
+
+# Secrets
+secrets/
+*.pem
+*.key
+credentials.json
+.openai*
+.anthropic*
+
+# WSL / local caches
+*.vhdx
+.cache/
