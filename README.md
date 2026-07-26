@@ -4,7 +4,7 @@
 
 ARES-UAV is an autonomous UAV swarm simulation platform. Multiple drones receive high-level missions from an AI commander, plan tasks, navigate safely, and cooperate — without continuous human control.
 
-> **Status:** Phase 2 in progress — A* planner in `autonomy/` (JSON obstacles → waypoints).
+> **Status:** Phase 2 — A* planner + Gazebo cylinder world (`simulation/worlds/ares_navigate.sdf`). Verify with `run_ares_demo.bat`.
 
 ---
 
@@ -54,7 +54,7 @@ cd C:\Users\a\Projects\ARES-UAV
 python run_ares_demo.py
 ```
 
-Starts Gazebo + PX4, then flies `missions/square_demo.json` (arm → takeoff → 4 waypoints → land).
+Starts Gazebo + PX4, then plans + flies `missions/navigate_demo.json` (A* around a JSON obstacle).
 
 **Where to read code (software layers):**
 
@@ -89,6 +89,7 @@ ARES-UAV/
 ├── interfaces/               ← mission + navigation schemas
 ├── control/                  ← MAVSDK vehicle + mission runner
 ├── autonomy/                 ← Phase 2 A* planner
+├── simulation/               ← Gazebo worlds (obstacle demo)
 ├── scripts/                  ← launch + CLI entry
 ├── tests/
 ├── swarm/ perception/ …      ← later phases

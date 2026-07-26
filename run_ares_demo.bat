@@ -1,9 +1,12 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title ARES-UAV SITL Demo
+title ARES-UAV Phase-2 Demo
 echo.
-echo === ARES-UAV: Gazebo 3D + PX4 + MAVSDK takeoff/land ===
+echo === ARES-UAV: Gazebo + PX4 + planned waypoint flight ===
+echo     (A* from missions\navigate_demo.json)
+echo.
+echo Prerequisites: VcXsrv installed; WSL Ubuntu user "sunny"; ~/ares-venv with MAVSDK.
 echo.
 python "%~dp0run_ares_demo.py"
 set ERR=%ERRORLEVEL%

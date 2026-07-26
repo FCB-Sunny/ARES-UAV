@@ -7,8 +7,8 @@
 | `run_planned_mission.py` | **Phase 2** — plan from navigation JSON, then fly |
 | `mavsdk_takeoff_land.py` | Phase 0 smoke test (arm → takeoff → land only) |
 
-**Usual way (Windows):** `run_ares_demo.bat` → starts sim + Phase 1 square mission.
+**Usual way (Windows):** double-click `run_ares_demo.bat` → Gazebo world with cylinder + PX4 + Phase 2 planned flight.
 
-Phase 2 (SITL already up): `python scripts/run_planned_mission.py missions/navigate_demo.json` (inside WSL with venv), or `--plan-only` without sim.
+Avoidance check (no sim): `python scripts/check_plan_avoidance.py missions/navigate_demo.json`
 
-ARES application logic lives in `control/`, `autonomy/`, and `interfaces/`, not in PX4/Gazebo source.
+ARES application logic lives in `control/`, `autonomy/`, and `interfaces/`. Worlds live in `simulation/`.

@@ -36,8 +36,8 @@
 
 - [x] Path planning skeleton: A* in `autonomy/` → `MissionPlan`
 - [x] Navigation request schema (`interfaces/navigation.py`) + `missions/navigate_demo.json`
-- [ ] Fly planned path on SITL (`scripts/run_planned_mission.py`)
-- [ ] Obstacle avoidance tied to Gazebo world (not only JSON circles)
+- [x] Gazebo world obstacle aligned with JSON (`simulation/worlds/ares_navigate.sdf`)
+- [ ] Verify planned flight on SITL (`run_ares_demo.bat`) — see cylinder + detour
 - [ ] Return-to-home / battery-aware abort (basic)
 
 **Exit:** Start → avoid → goal → home.

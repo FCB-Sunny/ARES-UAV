@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-click ARES Phase-1 demo: VcXsrv + Gazebo GUI + PX4 SITL + waypoint mission."""
+"""One-click ARES Phase-2 demo: VcXsrv + Gazebo GUI + PX4 SITL + planned mission."""
 
 from __future__ import annotations
 
@@ -128,13 +128,13 @@ def wait_ready(timeout_s: int = 180) -> None:
 
 
 def run_mission() -> None:
-    print("[*] Running Phase-1 waypoint mission...")
+    print("[*] Running Phase-2 planned mission (A* → fly)...")
     repo = win_to_wsl(ROOT)
-    mission = win_to_wsl(ROOT / "missions" / "square_demo.json")
+    navigation = win_to_wsl(ROOT / "missions" / "navigate_demo.json")
     cmd = (
         f"source ~/ares-venv/bin/activate && "
         f"cd '{repo}' && "
-        f"PYTHONPATH='{repo}' python3 scripts/run_waypoint_mission.py '{mission}'"
+        f"PYTHONPATH='{repo}' python3 scripts/run_planned_mission.py '{navigation}'"
     )
     result = run(
         ["wsl", "-d", WSL_DISTRO, "-u", WSL_USER, "--", "bash", "-lc", cmd],
@@ -145,18 +145,18 @@ def run_mission() -> None:
     if result.stderr:
         print(result.stderr, file=sys.stderr)
     if result.returncode != 0 or "MISSION_OK" not in (result.stdout or ""):
-        print("[!] Waypoint mission did not complete successfully")
+        print("[!] Planned mission did not complete successfully")
         sys.exit(result.returncode or 1)
-    print("[*] Waypoint mission OK")
+    print("[*] Planned mission OK")
 
 
 def main() -> int:
-    print("=== ARES-UAV Phase-1 waypoint demo ===")
+    print("=== ARES-UAV Phase-2 planned navigation demo ===")
     if not (SCRIPTS / "start_sitl_gui.sh").exists():
         print(f"[!] Missing {SCRIPTS / 'start_sitl_gui.sh'}")
         sys.exit(1)
-    if not (ROOT / "missions" / "square_demo.json").exists():
-        print(f"[!] Missing {ROOT / 'missions' / 'square_demo.json'}")
+    if not (ROOT / "missions" / "navigate_demo.json").exists():
+        print(f"[!] Missing {ROOT / 'missions' / 'navigate_demo.json'}")
         sys.exit(1)
 
     ensure_vcxsrv()
@@ -166,7 +166,7 @@ def main() -> int:
         wait_ready()
         run_mission()
         print()
-        print("SUCCESS: waypoint mission completed.")
+        print("SUCCESS: planned navigation mission completed.")
         print("Close this window when finished watching Gazebo.")
         return 0
     finally:
