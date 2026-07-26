@@ -1,23 +1,23 @@
 # ARES-UAV — Development Roadmap
 
-## Phase 0 — Environment & Foundation (current)
+## Phase 0 — Environment & Foundation ✅
 
 **Goal:** Reproducible engineering baseline.
 
 - [x] Host analysis + `ENVIRONMENT_SETUP.md`
 - [x] WSL2 + Ubuntu 22.04 operational
 - [x] GitHub repository created
-- [ ] ROS 2 Humble installed and verified
-- [ ] Gazebo Harmonic launches
-- [ ] PX4 SITL `gz_x500` runs
-- [ ] MAVSDK arm / takeoff / land demo
-- [ ] WSL snapshot backup after success
+- [x] ROS 2 Humble installed and verified
+- [x] Gazebo Harmonic launches
+- [x] PX4 SITL `gz_x500` runs
+- [x] MAVSDK arm / takeoff / land demo
+- [ ] WSL snapshot backup after success (optional)
 
-**Exit:** Single simulated UAV controllable via MAVSDK.
+**Exit:** Single simulated UAV controllable via MAVSDK. — **met** (`run_ares_demo.bat`)
 
 ---
 
-## Phase 1 — Foundation Flight (Week 1–2)
+## Phase 1 — Foundation Flight (Week 1–2) ← next
 
 **Goal:** One drone flies autonomously in simulation.
 
@@ -79,4 +79,4 @@ Only begin when Phases 0–3 are reliable.
 
 ## Tracking Rule
 
-Do not start Phase N+1 until Phase N exit criteria are checked off in this file.
+Check items only after verification on this host. Do not mark future phases complete early.

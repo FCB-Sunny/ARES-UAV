@@ -59,3 +59,13 @@ credentials.json
 # WSL / local caches
 *.vhdx
 .cache/
+
+# Local install clutter / one-off helpers (never commit)
+_*
+!scripts/
+*.exe
+*.msi
+*.gpg
+_ares_demo_sitl.log
+vcxsrv-installer.exe
+gazebo.gpg

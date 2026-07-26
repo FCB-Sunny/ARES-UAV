@@ -4,7 +4,7 @@
 
 ARES-UAV is an autonomous UAV swarm simulation platform. Multiple drones receive high-level missions from an AI commander, plan tasks, navigate safely, and cooperate — without continuous human control.
 
-> **Status:** Phase 0 — Engineering foundation (environment + documentation). No autonomy code yet.
+> **Status:** Phase 0 complete (environment verified). Phase 1 next — scripted waypoint flight.
 
 ---
 
@@ -29,43 +29,50 @@ PX4 Flight Controller (SITL)
 Gazebo Simulation
 ```
 
-## System Layers
+## What lives where
 
-| Layer | Purpose | Stack (v1) |
-|-------|---------|------------|
-| Simulation | Physics, sensors, world | Gazebo Harmonic, PX4 SITL |
-| Flight control | Arm, takeoff, waypoints, offboard | MAVSDK Python, MAVLink |
-| Autonomy | Planning, localization, control | Python (ROS 2 Humble) |
-| Swarm | Formation, allocation, avoidance | Consensus → MARL later |
-| Perception | Detect / track / obstacles | OpenCV, YOLOv8 (CPU) |
-| AI commander | NL → mission JSON | Cloud LLM API first |
+| Location | What it is | Do you edit it? |
+|----------|------------|-----------------|
+| This GitHub repo | Specs + future ARES app code + demo scripts | **Yes** (your project) |
+| WSL Ubuntu (`~/PX4-Autopilot`, ROS, Gazebo) | Installed simulator / autopilot tools | **No** (use them, don’t study every file) |
+| Empty folders (`control/`, `autonomy/`, …) | Placeholders for Phase 1+ | Fill later |
 
-## Host Constraints
+## Phase 0 demo (one command)
 
-- Windows 10 + **WSL2 Ubuntu 22.04**
-- No local GPU training / Isaac Sim in v1
-- Start with **one** simulated drone, then scale
+Prerequisites (already set up on the ARES host): WSL2 Ubuntu 22.04, ROS 2 Humble, Gazebo Harmonic, PX4 SITL build, `~/ares-venv` with MAVSDK, VcXsrv on Windows.
 
-## Repository Layout (target)
+From Windows:
+
+```bat
+run_ares_demo.bat
+```
+
+Or:
+
+```powershell
+cd C:\Users\a\Projects\ARES-UAV
+python run_ares_demo.py
+```
+
+That starts Gazebo (3D window) + PX4, then runs arm → takeoff → land.
+
+Readable demo code:
+
+- [`scripts/mavsdk_takeoff_land.py`](scripts/mavsdk_takeoff_land.py)
+- [`scripts/start_sitl_gui.sh`](scripts/start_sitl_gui.sh)
+- [`scripts/README.md`](scripts/README.md)
+
+## Repository layout
 
 ```
 ARES-UAV/
 ├── README.md
-├── PROJECT_SPEC.md
-├── ARCHITECTURE.md
-├── ROADMAP.md
-├── DEVELOPMENT_RULES.md
-├── ENVIRONMENT_SETUP.md
-├── docs/
-├── simulation/
-├── autonomy/
-├── swarm/
-├── perception/
-├── ai_agent/
-├── control/
-├── interfaces/
-├── tests/
-└── tools/
+├── PROJECT_SPEC.md / ARCHITECTURE.md / ROADMAP.md / ...
+├── run_ares_demo.bat      ← one-click Windows launcher
+├── run_ares_demo.py
+├── scripts/               ← Phase 0 demo scripts (read these)
+├── control/ autonomy/ …   ← empty until Phase 1+
+└── docs/
 ```
 
 ## Documentation
@@ -76,13 +83,7 @@ ARES-UAV/
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Layers, data flow, interfaces |
 | [ROADMAP.md](ROADMAP.md) | Phased milestones |
 | [DEVELOPMENT_RULES.md](DEVELOPMENT_RULES.md) | Engineering standards |
-| [ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md) | WSL / ROS 2 / PX4 / Gazebo / MAVSDK plan |
-
-## Quick Start (after Phase 0 install)
-
-1. Read `ENVIRONMENT_SETUP.md` and complete verification checklist.
-2. Confirm: ROS 2 → Gazebo → PX4 SITL → MAVSDK takeoff/land.
-3. Follow `ROADMAP.md` Phase 1 — do not skip foundation checks.
+| [ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md) | WSL / ROS 2 / PX4 / Gazebo / MAVSDK setup |
 
 ## License
 
