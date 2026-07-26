@@ -4,7 +4,7 @@
 
 ARES-UAV is an autonomous UAV swarm simulation platform. Multiple drones receive high-level missions from an AI commander, plan tasks, navigate safely, and cooperate — without continuous human control.
 
-> **Status:** Phase 2 complete (planned navigate + RTH). Phase 3 next — multi-drone.
+> **Status:** Phase 2A complete (mission + global A*). **Phase 2B** next — single-UAV autonomy (local planner, perception). Phase 3 waits.
 
 ---
 
@@ -35,7 +35,8 @@ Gazebo Simulation
 |----------|------------|-----------------|
 | This GitHub repo | Specs + future ARES app code + demo scripts | **Yes** (your project) |
 | WSL Ubuntu (`~/PX4-Autopilot`, ROS, Gazebo) | Installed simulator / autopilot tools | **No** (use them, don’t study every file) |
-| Empty folders (`control/`, `autonomy/`, …) | Placeholders for Phase 1+ | Fill later |
+| `control/`, `autonomy/`, `interfaces/`, … | ARES app (mission + planners) | **Yes** |
+| Living architecture review | [`docs/PHASE2_ARCHITECTURE.md`](docs/PHASE2_ARCHITECTURE.md) | Read first for Phase 2B |
 
 ## Phase 1 demo (one command)
 
