@@ -3,7 +3,10 @@
   "takeoff_altitude_m": 5.0,
   "arrival_threshold_m": 2.0,
   "altitude_m": 5.0,
-  "safety_radius_m": 2.5,
+  "safety_radius_m": 1.5,
+  "return_to_home": true,
+  "waypoint_timeout_s": 120,
+  "min_battery_fraction": 0.15,
   "start": {"north_m": 0.0, "east_m": 0.0},
   "goal": {"north_m": 20.0, "east_m": 16.0},
   "grid": {

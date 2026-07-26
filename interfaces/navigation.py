@@ -58,6 +58,10 @@ class NavigationRequest:
     obstacles: tuple[ObstacleCircle, ...] = ()
     # Extra keep-out around each obstacle (vehicle size + tracking slack).
     safety_radius_m: float = 2.5
+    # After goal, plan a path back to start (avoid obstacles on the way home).
+    return_to_home: bool = True
+    waypoint_timeout_s: float = 120.0
+    min_battery_fraction: float = 0.15
 
     def __post_init__(self) -> None:
         if self.takeoff_altitude_m <= 0 or self.altitude_m <= 0:
@@ -66,6 +70,10 @@ class NavigationRequest:
             raise ValueError("arrival_threshold_m must be > 0")
         if self.safety_radius_m < 0:
             raise ValueError("safety_radius_m must be >= 0")
+        if self.waypoint_timeout_s <= 0:
+            raise ValueError("waypoint_timeout_s must be > 0")
+        if not (0.0 <= self.min_battery_fraction < 1.0):
+            raise ValueError("min_battery_fraction must be in [0, 1)")
 
 
 def _as_float(value: Any, field: str) -> float:
@@ -125,6 +133,13 @@ def navigation_from_dict(data: dict[str, Any]) -> NavigationRequest:
         obstacles=tuple(obstacles),
         safety_radius_m=_as_float(
             data.get("safety_radius_m", 2.5), "safety_radius_m"
+        ),
+        return_to_home=bool(data.get("return_to_home", True)),
+        waypoint_timeout_s=_as_float(
+            data.get("waypoint_timeout_s", 120.0), "waypoint_timeout_s"
+        ),
+        min_battery_fraction=_as_float(
+            data.get("min_battery_fraction", 0.15), "min_battery_fraction"
         ),
     )
 

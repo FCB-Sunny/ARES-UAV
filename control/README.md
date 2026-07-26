@@ -10,7 +10,13 @@ Those are below this layer.
 | File | Role |
 |------|------|
 | `vehicle.py` | Thin wrapper: connect / arm / takeoff / goto / land |
-| `mission_runner.py` | Orchestrates a `MissionPlan` on a `Vehicle` |
+| `mission_runner.py` | Fly waypoints; RTH; timeout/battery abort |
+
+Phase 2 runner behavior:
+
+1. Fly all `MissionPlan` waypoints (planner may already include home).
+2. If `return_home` is set, goto local `(0,0)` then land.
+3. On waypoint timeout or low battery → emergency RTH → land → `MISSION_ABORT_RTH`.
 
 ## Dependency direction (important)
 

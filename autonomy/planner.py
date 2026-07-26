@@ -34,12 +34,36 @@ def plan_mission(request: NavigationRequest) -> MissionPlan:
     if not grid.is_free(*goal_cell):
         raise PlanningError(f"goal is blocked or out of bounds: {request.goal}")
 
-    cells = astar(grid, start_cell, goal_cell)
-    if cells is None:
+    out_cells = astar(grid, start_cell, goal_cell)
+    if out_cells is None:
         raise PlanningError("no path from start to goal")
 
-    simplified = _simplify_cells(grid, cells)
-    waypoints = _cells_to_waypoints(grid, simplified, request)
+    out_simp = _simplify_cells(grid, out_cells)
+    waypoints = _cells_to_waypoints(
+        grid,
+        out_simp,
+        altitude_m=request.altitude_m,
+        skip_first=True,
+        snap_last=request.goal,
+    )
+
+    if request.return_to_home:
+        ret_cells = astar(grid, goal_cell, start_cell)
+        if ret_cells is None:
+            raise PlanningError("no return path from goal to home")
+        ret_simp = _simplify_cells(grid, ret_cells)
+        ret_wps = _cells_to_waypoints(
+            grid,
+            ret_simp,
+            altitude_m=request.altitude_m,
+            skip_first=True,
+            snap_last=request.start,
+        )
+        waypoints.extend(ret_wps)
+
+    if not waypoints:
+        raise PlanningError("planner produced an empty waypoint list")
+
     _assert_clearance(waypoints, request)
 
     return MissionPlan(
@@ -47,6 +71,10 @@ def plan_mission(request: NavigationRequest) -> MissionPlan:
         takeoff_altitude_m=request.takeoff_altitude_m,
         arrival_threshold_m=request.arrival_threshold_m,
         waypoints=tuple(waypoints),
+        waypoint_timeout_s=request.waypoint_timeout_s,
+        min_battery_fraction=request.min_battery_fraction,
+        return_home=False,  # home is already the last waypoint when return_to_home
+        home_alt_m=request.altitude_m,
     )
 
 
@@ -199,19 +227,19 @@ def _simplify_cells(
 def _cells_to_waypoints(
     grid: GridMap,
     cells: list[tuple[int, int]],
-    request: NavigationRequest,
+    *,
+    altitude_m: float,
+    skip_first: bool,
+    snap_last: XY,
 ) -> list[Waypoint]:
-    # Skip the start cell (already takeoff near home); keep goal exactly.
-    points: list[XY] = []
-    for cell in cells[1:]:
-        points.append(grid.cell_to_world(*cell))
+    use = cells[1:] if skip_first and cells else cells
+    points: list[XY] = [grid.cell_to_world(*cell) for cell in use]
     if not points:
-        points.append(request.goal)
+        points.append(snap_last)
     else:
-        # Snap last waypoint to exact goal coordinates.
-        points[-1] = request.goal
+        points[-1] = snap_last
 
     return [
-        Waypoint(north_m=p.north_m, east_m=p.east_m, alt_m=request.altitude_m)
+        Waypoint(north_m=p.north_m, east_m=p.east_m, alt_m=altitude_m)
         for p in points
     ]

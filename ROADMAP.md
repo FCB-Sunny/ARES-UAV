@@ -37,8 +37,9 @@
 - [x] Path planning skeleton: A* in `autonomy/` → `MissionPlan`
 - [x] Navigation request schema (`interfaces/navigation.py`) + `missions/navigate_demo.json`
 - [x] Gazebo world obstacle aligned with JSON (`simulation/worlds/ares_navigate.sdf`)
-- [ ] Verify planned flight on SITL (`run_ares_demo.bat`) — see cylinder + detour
-- [ ] Return-to-home / battery-aware abort (basic)
+- [x] Safety-radius inflation (clearance for vehicle / tracking)
+- [x] Return-to-home path + timeout/battery abort in `control/mission_runner.py`
+- [ ] Verify full out-and-back flight on SITL (`run_ares_demo.bat`)
 
 **Exit:** Start → avoid → goal → home.
 

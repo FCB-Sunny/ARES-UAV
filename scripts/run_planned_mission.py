@@ -63,7 +63,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     try:
-        asyncio.run(asyncio.wait_for(main(), timeout=600))
+        asyncio.run(asyncio.wait_for(main(), timeout=900))
     except SystemExit:
         raise
     except Exception as e:

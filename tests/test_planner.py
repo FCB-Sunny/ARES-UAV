@@ -25,6 +25,7 @@ def _req(
     obstacles: tuple[ObstacleCircle, ...] = (),
     goal: XY | None = None,
     safety_radius_m: float = 2.5,
+    return_to_home: bool = True,
 ) -> NavigationRequest:
     return NavigationRequest(
         name="test",
@@ -42,6 +43,7 @@ def _req(
         ),
         obstacles=obstacles,
         safety_radius_m=safety_radius_m,
+        return_to_home=return_to_home,
     )
 
 
@@ -49,10 +51,21 @@ class PlannerTests(unittest.TestCase):
     def test_navigate_demo_loads_and_plans(self) -> None:
         req = load_navigation(ROOT / "missions" / "navigate_demo.json")
         plan = plan_mission(req)
-        self.assertGreaterEqual(len(plan.waypoints), 1)
+        self.assertGreaterEqual(len(plan.waypoints), 2)
         last = plan.waypoints[-1]
-        self.assertAlmostEqual(last.north_m, req.goal.north_m, places=5)
-        self.assertAlmostEqual(last.east_m, req.goal.east_m, places=5)
+        # With return_to_home, mission ends at start/home.
+        self.assertAlmostEqual(last.north_m, req.start.north_m, places=5)
+        self.assertAlmostEqual(last.east_m, req.start.east_m, places=5)
+
+    def test_return_path_visits_goal(self) -> None:
+        req = load_navigation(ROOT / "missions" / "navigate_demo.json")
+        plan = plan_mission(req)
+        near_goal = any(
+            abs(wp.north_m - req.goal.north_m) < 0.01
+            and abs(wp.east_m - req.goal.east_m) < 0.01
+            for wp in plan.waypoints
+        )
+        self.assertTrue(near_goal, "outbound goal missing from plan")
 
     def test_path_keeps_safety_margin(self) -> None:
         obs = (ObstacleCircle(north_m=10.0, east_m=8.0, radius_m=4.0),)
