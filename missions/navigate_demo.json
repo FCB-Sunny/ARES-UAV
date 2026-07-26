@@ -1,0 +1,18 @@
+{
+  "name": "navigate_demo",
+  "takeoff_altitude_m": 5.0,
+  "arrival_threshold_m": 2.0,
+  "altitude_m": 5.0,
+  "start": {"north_m": 0.0, "east_m": 0.0},
+  "goal": {"north_m": 20.0, "east_m": 16.0},
+  "grid": {
+    "resolution_m": 2.0,
+    "north_min": -2.0,
+    "north_max": 24.0,
+    "east_min": -2.0,
+    "east_max": 20.0
+  },
+  "obstacles": [
+    {"north_m": 10.0, "east_m": 8.0, "radius_m": 4.0}
+  ]
+}

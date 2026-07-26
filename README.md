@@ -4,7 +4,7 @@
 
 ARES-UAV is an autonomous UAV swarm simulation platform. Multiple drones receive high-level missions from an AI commander, plan tasks, navigate safely, and cooperate — without continuous human control.
 
-> **Status:** Phase 1 complete (waypoint flight). Phase 2 next — path planner in `autonomy/`.
+> **Status:** Phase 2 in progress — A* planner in `autonomy/` (JSON obstacles → waypoints).
 
 ---
 
@@ -60,25 +60,38 @@ Starts Gazebo + PX4, then flies `missions/square_demo.json` (arm → takeoff →
 
 | Layer | Path | What you learn |
 |-------|------|----------------|
-| Mission data | [`interfaces/mission.py`](interfaces/mission.py), [`missions/`](missions/) | Plan as JSON/types |
+| Navigate intent | [`interfaces/navigation.py`](interfaces/navigation.py) | Start/goal/obstacles (Phase 2) |
+| Planner | [`autonomy/planner.py`](autonomy/planner.py) | A* → `MissionPlan` |
+| Mission data | [`interfaces/mission.py`](interfaces/mission.py), [`missions/`](missions/) | Flyable waypoints |
 | Flight API | [`control/vehicle.py`](control/vehicle.py) | Only place that imports MAVSDK |
 | Orchestration | [`control/mission_runner.py`](control/mission_runner.py) | Mission steps in order |
-| Entry | [`scripts/run_waypoint_mission.py`](scripts/run_waypoint_mission.py) | CLI glue |
+| Entry | [`scripts/run_waypoint_mission.py`](scripts/run_waypoint_mission.py) / [`run_planned_mission.py`](scripts/run_planned_mission.py) | CLI glue |
 | Sim bring-up | [`scripts/start_sitl_gui.sh`](scripts/start_sitl_gui.sh) | Gazebo + PX4 (treat as tool) |
 
-Unit test (no sim): `python -m unittest tests/test_mission.py`
+Unit tests (no sim):
+
+```bat
+python -m unittest tests.test_mission tests.test_planner
+```
+
+Plan only (no sim):
+
+```bat
+python scripts/run_planned_mission.py missions/navigate_demo.json --plan-only
+```
 
 ## Repository layout
 
 ```
 ARES-UAV/
 ├── run_ares_demo.bat / .py   ← one-click demo
-├── missions/                 ← waypoint JSON demos
-├── interfaces/               ← mission schema (data)
+├── missions/                 ← waypoint + navigation JSON demos
+├── interfaces/               ← mission + navigation schemas
 ├── control/                  ← MAVSDK vehicle + mission runner
+├── autonomy/                 ← Phase 2 A* planner
 ├── scripts/                  ← launch + CLI entry
 ├── tests/
-├── autonomy/ swarm/ …        ← later phases
+├── swarm/ perception/ …      ← later phases
 └── docs/
 ```
 

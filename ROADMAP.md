@@ -30,13 +30,15 @@
 
 ---
 
-## Phase 2 — Autonomous Navigation (Week 3–4)
+## Phase 2 — Autonomous Navigation (Week 3–4) ← in progress
 
 **Goal:** Navigate with obstacles.
 
-- Path planning (start with A* or RRT*)
-- Obstacle avoidance
-- Return-to-home / battery-aware abort (basic)
+- [x] Path planning skeleton: A* in `autonomy/` → `MissionPlan`
+- [x] Navigation request schema (`interfaces/navigation.py`) + `missions/navigate_demo.json`
+- [ ] Fly planned path on SITL (`scripts/run_planned_mission.py`)
+- [ ] Obstacle avoidance tied to Gazebo world (not only JSON circles)
+- [ ] Return-to-home / battery-aware abort (basic)
 
 **Exit:** Start → avoid → goal → home.
 
