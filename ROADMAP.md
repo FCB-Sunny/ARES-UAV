@@ -30,7 +30,7 @@
 
 ---
 
-## Phase 2 — Autonomous Navigation (Week 3–4) ← in progress
+## Phase 2 — Autonomous Navigation (Week 3–4) ✅
 
 **Goal:** Navigate with obstacles.
 
@@ -39,13 +39,13 @@
 - [x] Gazebo world obstacle aligned with JSON (`simulation/worlds/ares_navigate.sdf`)
 - [x] Safety-radius inflation (clearance for vehicle / tracking)
 - [x] Return-to-home path + timeout/battery abort in `control/mission_runner.py`
-- [ ] Verify full out-and-back flight on SITL (`run_ares_demo.bat`)
+- [x] Verify full out-and-back flight on SITL (`run_ares_demo.bat`)
 
-**Exit:** Start → avoid → goal → home.
+**Exit:** Start → avoid → goal → home. — **met**
 
 ---
 
-## Phase 3 — Multi-Drone System (Month 2)
+## Phase 3 — Multi-Drone System (Month 2) ← next
 
 **Goal:** 3–5 drones cooperate.
 

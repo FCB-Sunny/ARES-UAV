@@ -4,7 +4,7 @@
 
 ARES-UAV is an autonomous UAV swarm simulation platform. Multiple drones receive high-level missions from an AI commander, plan tasks, navigate safely, and cooperate — without continuous human control.
 
-> **Status:** Phase 2 — A* planner + Gazebo cylinder world (`simulation/worlds/ares_navigate.sdf`). Verify with `run_ares_demo.bat`.
+> **Status:** Phase 2 complete (planned navigate + RTH). Phase 3 next — multi-drone.
 
 ---
 
