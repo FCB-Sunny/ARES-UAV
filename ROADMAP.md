@@ -74,17 +74,17 @@ Perception → Mapping (local occupancy / costmap)
 
 ### Phase 2.1 — Architecture Review
 
-- [ ] Document ownership: ARES vs PX4 vs Gazebo for every module in the current pipeline
-- [ ] Inputs / outputs / communication for each ARES package
-- [ ] Living doc: [`docs/PHASE2_ARCHITECTURE.md`](docs/PHASE2_ARCHITECTURE.md)
+- [x] Document ownership: ARES vs PX4 vs Gazebo for every module in the current pipeline
+- [x] Inputs / outputs / communication for each ARES package
+- [x] Living doc: [`docs/PHASE2_ARCHITECTURE.md`](docs/PHASE2_ARCHITECTURE.md)
 
-**Exit:** You can explain the pipeline without treating PX4/Gazebo as mystery boxes.
+**Exit:** You can explain the pipeline without treating PX4/Gazebo as mystery boxes. — **met** (owner ready for 2.2)
 
 ### Phase 2.2 — Dynamic Local Planning
 
 - [ ] Keep A* as **global** planner only
-- [ ] Design local planner (architecture + algorithm choice) before coding
-- [ ] Implement online local trajectory / dynamic obstacle reaction
+- [ ] Design local planner (architecture + algorithm choice) before coding — guide: [`docs/PHASE2_2_LOCAL_PLANNER_DESIGN.md`](docs/PHASE2_2_LOCAL_PLANNER_DESIGN.md)
+- [ ] Implement online local trajectory / dynamic obstacle reaction (owner-led)
 - [ ] Wire: Global path → Local planner → PX4 setpoints (prefer offboard over open-loop goto list)
 
 **Exit:** Vehicle reacts to a **moving / newly appearing** obstacle without a full global replan-only workflow.
