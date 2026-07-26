@@ -44,22 +44,41 @@ class GridMap:
         return XY(north_m=north, east_m=east)
 
 
-def build_grid(bounds: GridBounds, obstacles: tuple[ObstacleCircle, ...] = ()) -> GridMap:
+def build_grid(
+    bounds: GridBounds,
+    obstacles: tuple[ObstacleCircle, ...] = (),
+    *,
+    inflation_m: float = 0.0,
+) -> GridMap:
+    """Build occupancy grid.
+
+    ``inflation_m`` grows each obstacle (vehicle size + tracking buffer).
+    Keep JSON ``radius_m`` equal to the Gazebo cylinder; inflate only here.
+    Cell half-diagonal is added so quantization cannot place a free cell
+    center inside the inflated keep-out.
+    """
     res = bounds.resolution_m
     n_rows = max(1, int(math.ceil((bounds.north_max - bounds.north_min) / res)))
     n_cols = max(1, int(math.ceil((bounds.east_max - bounds.east_min) / res)))
     occupied = [[False for _ in range(n_cols)] for _ in range(n_rows)]
 
     grid = GridMap(bounds=bounds, occupied=occupied)
+    cell_pad = 0.5 * math.sqrt(2.0) * res
     for obs in obstacles:
-        _stamp_circle(grid, obs)
+        _stamp_circle(grid, obs, extra_radius_m=inflation_m + cell_pad)
     return grid
 
 
-def _stamp_circle(grid: GridMap, obs: ObstacleCircle) -> None:
+def _stamp_circle(
+    grid: GridMap,
+    obs: ObstacleCircle,
+    *,
+    extra_radius_m: float = 0.0,
+) -> None:
+    keep_out = obs.radius_m + max(0.0, extra_radius_m)
     for row in range(grid.n_rows):
         for col in range(grid.n_cols):
             cell = grid.cell_to_world(row, col)
             dist = math.hypot(cell.north_m - obs.north_m, cell.east_m - obs.east_m)
-            if dist <= obs.radius_m:
+            if dist <= keep_out:
                 grid.occupied[row][col] = True

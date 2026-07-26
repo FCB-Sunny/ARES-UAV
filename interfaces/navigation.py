@@ -56,12 +56,16 @@ class NavigationRequest:
     goal: XY
     grid: GridBounds
     obstacles: tuple[ObstacleCircle, ...] = ()
+    # Extra keep-out around each obstacle (vehicle size + tracking slack).
+    safety_radius_m: float = 2.5
 
     def __post_init__(self) -> None:
         if self.takeoff_altitude_m <= 0 or self.altitude_m <= 0:
             raise ValueError("altitudes must be > 0")
         if self.arrival_threshold_m <= 0:
             raise ValueError("arrival_threshold_m must be > 0")
+        if self.safety_radius_m < 0:
+            raise ValueError("safety_radius_m must be >= 0")
 
 
 def _as_float(value: Any, field: str) -> float:
@@ -119,6 +123,9 @@ def navigation_from_dict(data: dict[str, Any]) -> NavigationRequest:
             east_max=_as_float(grid_raw.get("east_max"), "grid.east_max"),
         ),
         obstacles=tuple(obstacles),
+        safety_radius_m=_as_float(
+            data.get("safety_radius_m", 2.5), "safety_radius_m"
+        ),
     )
 
 

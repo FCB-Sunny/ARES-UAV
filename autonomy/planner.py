@@ -19,7 +19,13 @@ class PlanningError(RuntimeError):
 
 
 def plan_mission(request: NavigationRequest) -> MissionPlan:
-    grid = build_grid(request.grid, request.obstacles)
+    # Inflate obstacles so the *vehicle* (not just the path center) stays clear.
+    # PX4 goto also cuts corners between waypoints — extra margin helps.
+    grid = build_grid(
+        request.grid,
+        request.obstacles,
+        inflation_m=request.safety_radius_m,
+    )
     start_cell = grid.world_to_cell(request.start)
     goal_cell = grid.world_to_cell(request.goal)
 
@@ -34,6 +40,7 @@ def plan_mission(request: NavigationRequest) -> MissionPlan:
 
     simplified = _simplify_cells(grid, cells)
     waypoints = _cells_to_waypoints(grid, simplified, request)
+    _assert_clearance(waypoints, request)
 
     return MissionPlan(
         name=request.name,
@@ -41,6 +48,48 @@ def plan_mission(request: NavigationRequest) -> MissionPlan:
         arrival_threshold_m=request.arrival_threshold_m,
         waypoints=tuple(waypoints),
     )
+
+
+def _assert_clearance(
+    waypoints: list[Waypoint],
+    request: NavigationRequest,
+) -> None:
+    """Fail closed if any waypoint or segment sample violates keep-out."""
+    samples = _path_samples(request.start, waypoints)
+    for pt in samples:
+        for obs in request.obstacles:
+            required = obs.radius_m + request.safety_radius_m
+            d = math.hypot(pt.north_m - obs.north_m, pt.east_m - obs.east_m)
+            if d < required:
+                raise PlanningError(
+                    f"path too close to obstacle at N={pt.north_m:.1f} E={pt.east_m:.1f} "
+                    f"(dist={d:.2f} m < required {required:.2f} m)"
+                )
+
+
+def _path_samples(
+    start: XY,
+    waypoints: list[Waypoint],
+    *,
+    step_m: float = 1.0,
+) -> list[XY]:
+    pts = [start] + [XY(wp.north_m, wp.east_m) for wp in waypoints]
+    out: list[XY] = []
+    for a, b in zip(pts, pts[1:]):
+        out.append(a)
+        length = math.hypot(b.north_m - a.north_m, b.east_m - a.east_m)
+        n = max(1, int(math.ceil(length / step_m)))
+        for i in range(1, n):
+            t = i / n
+            out.append(
+                XY(
+                    north_m=a.north_m + t * (b.north_m - a.north_m),
+                    east_m=a.east_m + t * (b.east_m - a.east_m),
+                )
+            )
+    if pts:
+        out.append(pts[-1])
+    return out
 
 
 def astar(

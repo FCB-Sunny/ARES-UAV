@@ -20,7 +20,9 @@ Gazebo world frame is **ENU**:
 
 `missions/navigate_demo.json` obstacle `(N=10, E=8, r=4)` → cylinder at pose `8 10 4` (radius 4, height 8).
 
-Keep JSON and SDF in sync when you move the obstacle.
+Planner also uses `safety_radius_m` (keep-out inflation). Gazebo keeps the **physical** radius; only the planner grows the keep-out.
+
+Keep JSON and SDF physical radius in sync when you move the obstacle.
 
 ## Used by
 
