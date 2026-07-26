@@ -4,7 +4,7 @@
 
 ARES-UAV is an autonomous UAV swarm simulation platform. Multiple drones receive high-level missions from an AI commander, plan tasks, navigate safely, and cooperate — without continuous human control.
 
-> **Status:** Phase 0 complete (environment verified). Phase 1 next — scripted waypoint flight.
+> **Status:** Phase 1 complete (waypoint flight). Phase 2 next — path planner in `autonomy/`.
 
 ---
 
@@ -37,9 +37,9 @@ Gazebo Simulation
 | WSL Ubuntu (`~/PX4-Autopilot`, ROS, Gazebo) | Installed simulator / autopilot tools | **No** (use them, don’t study every file) |
 | Empty folders (`control/`, `autonomy/`, …) | Placeholders for Phase 1+ | Fill later |
 
-## Phase 0 demo (one command)
+## Phase 1 demo (one command)
 
-Prerequisites (already set up on the ARES host): WSL2 Ubuntu 22.04, ROS 2 Humble, Gazebo Harmonic, PX4 SITL build, `~/ares-venv` with MAVSDK, VcXsrv on Windows.
+Prerequisites: WSL2 Ubuntu 22.04, ROS 2 Humble, Gazebo Harmonic, PX4 SITL, `~/ares-venv` with MAVSDK, VcXsrv on Windows.
 
 From Windows:
 
@@ -54,24 +54,31 @@ cd C:\Users\a\Projects\ARES-UAV
 python run_ares_demo.py
 ```
 
-That starts Gazebo (3D window) + PX4, then runs arm → takeoff → land.
+Starts Gazebo + PX4, then flies `missions/square_demo.json` (arm → takeoff → 4 waypoints → land).
 
-Readable demo code:
+**Where to read code (software layers):**
 
-- [`scripts/mavsdk_takeoff_land.py`](scripts/mavsdk_takeoff_land.py)
-- [`scripts/start_sitl_gui.sh`](scripts/start_sitl_gui.sh)
-- [`scripts/README.md`](scripts/README.md)
+| Layer | Path | What you learn |
+|-------|------|----------------|
+| Mission data | [`interfaces/mission.py`](interfaces/mission.py), [`missions/`](missions/) | Plan as JSON/types |
+| Flight API | [`control/vehicle.py`](control/vehicle.py) | Only place that imports MAVSDK |
+| Orchestration | [`control/mission_runner.py`](control/mission_runner.py) | Mission steps in order |
+| Entry | [`scripts/run_waypoint_mission.py`](scripts/run_waypoint_mission.py) | CLI glue |
+| Sim bring-up | [`scripts/start_sitl_gui.sh`](scripts/start_sitl_gui.sh) | Gazebo + PX4 (treat as tool) |
+
+Unit test (no sim): `python -m unittest tests/test_mission.py`
 
 ## Repository layout
 
 ```
 ARES-UAV/
-├── README.md
-├── PROJECT_SPEC.md / ARCHITECTURE.md / ROADMAP.md / ...
-├── run_ares_demo.bat      ← one-click Windows launcher
-├── run_ares_demo.py
-├── scripts/               ← Phase 0 demo scripts (read these)
-├── control/ autonomy/ …   ← empty until Phase 1+
+├── run_ares_demo.bat / .py   ← one-click demo
+├── missions/                 ← waypoint JSON demos
+├── interfaces/               ← mission schema (data)
+├── control/                  ← MAVSDK vehicle + mission runner
+├── scripts/                  ← launch + CLI entry
+├── tests/
+├── autonomy/ swarm/ …        ← later phases
 └── docs/
 ```
 

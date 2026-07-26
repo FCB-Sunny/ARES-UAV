@@ -1,12 +1,11 @@
-# Demo / launch scripts (Phase 0)
-
-These are the **only** runtime scripts you need for the current takeoff/land demo.
+# Demo / launch scripts
 
 | File | Role |
 |------|------|
-| `start_sitl_gui.sh` | Starts Gazebo (3D window) + PX4 SITL inside WSL |
-| `mavsdk_takeoff_land.py` | Arms, takes off, lands via MAVSDK |
+| `start_sitl_gui.sh` | Gazebo (3D) + PX4 SITL inside WSL |
+| `run_waypoint_mission.py` | **Phase 1** — load mission JSON, fly waypoints |
+| `mavsdk_takeoff_land.py` | Phase 0 smoke test (arm → takeoff → land only) |
 
-**Usual way to run (Windows):** double-click `run_ares_demo.bat` in the repo root.
+**Usual way (Windows):** `run_ares_demo.bat` → starts sim + Phase 1 square mission.
 
-Do **not** edit PX4/ROS/Gazebo source under WSL for ARES work — those are installed tools. Future ARES application code will live in `control/`, `autonomy/`, etc.
+ARES application logic lives in `control/` and `interfaces/`, not in PX4/Gazebo source.

@@ -17,15 +17,16 @@
 
 ---
 
-## Phase 1 — Foundation Flight (Week 1–2) ← next
+## Phase 1 — Foundation Flight (Week 1–2) ✅
 
 **Goal:** One drone flies autonomously in simulation.
 
-- Repo module skeletons (`control/`, `simulation/`, …)
-- Scripted mission: arm → takeoff → waypoint → land
-- Record demo video / log
+- [x] Repo modules: `interfaces/` (mission data) + `control/` (MAVSDK vehicle)
+- [x] Scripted mission: arm → takeoff → waypoints → land (`missions/square_demo.json`)
+- [x] Verify on host via `run_ares_demo.bat`
+- [ ] Record demo video / log (optional)
 
-**Exit:** Reproducible single-vehicle waypoint flight.
+**Exit:** Reproducible single-vehicle waypoint flight. — **met**
 
 ---
 

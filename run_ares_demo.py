@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-click ARES Phase-0 demo: VcXsrv + Gazebo GUI + PX4 SITL + MAVSDK takeoff/land."""
+"""One-click ARES Phase-1 demo: VcXsrv + Gazebo GUI + PX4 SITL + waypoint mission."""
 
 from __future__ import annotations
 
@@ -83,14 +83,9 @@ def start_sitl() -> subprocess.Popen:
         log_win.unlink()
 
     sitl_sh = win_to_wsl(SCRIPTS / "start_sitl_gui.sh")
-    demo_py = win_to_wsl(SCRIPTS / "mavsdk_takeoff_land.py")
     log_wsl = win_to_wsl(log_win)
 
-    prep = wsl(
-        f"cp '{sitl_sh}' ~/ares_start_sitl_gui.sh && "
-        f"cp '{demo_py}' ~/ares_mavsdk_takeoff_land.py && "
-        "chmod +x ~/ares_start_sitl_gui.sh ~/ares_mavsdk_takeoff_land.py"
-    )
+    prep = wsl(f"cp '{sitl_sh}' ~/ares_start_sitl_gui.sh && chmod +x ~/ares_start_sitl_gui.sh")
     if prep.returncode != 0:
         print(prep.stderr or prep.stdout)
         sys.exit(1)
@@ -132,36 +127,36 @@ def wait_ready(timeout_s: int = 180) -> None:
     sys.exit(1)
 
 
-def run_mavsdk() -> None:
-    print("[*] Running MAVSDK takeoff/land demo...")
+def run_mission() -> None:
+    print("[*] Running Phase-1 waypoint mission...")
+    repo = win_to_wsl(ROOT)
+    mission = win_to_wsl(ROOT / "missions" / "square_demo.json")
+    cmd = (
+        f"source ~/ares-venv/bin/activate && "
+        f"cd '{repo}' && "
+        f"PYTHONPATH='{repo}' python3 scripts/run_waypoint_mission.py '{mission}'"
+    )
     result = run(
-        [
-            "wsl",
-            "-d",
-            WSL_DISTRO,
-            "-u",
-            WSL_USER,
-            "--",
-            "bash",
-            "-lc",
-            "source ~/ares-venv/bin/activate && python3 ~/ares_mavsdk_takeoff_land.py",
-        ],
+        ["wsl", "-d", WSL_DISTRO, "-u", WSL_USER, "--", "bash", "-lc", cmd],
         text=True,
     )
     if result.stdout:
         print(result.stdout)
     if result.stderr:
         print(result.stderr, file=sys.stderr)
-    if result.returncode != 0 or "STEP9_OK" not in (result.stdout or ""):
-        print("[!] MAVSDK demo did not complete successfully")
+    if result.returncode != 0 or "MISSION_OK" not in (result.stdout or ""):
+        print("[!] Waypoint mission did not complete successfully")
         sys.exit(result.returncode or 1)
-    print("[*] MAVSDK demo OK")
+    print("[*] Waypoint mission OK")
 
 
 def main() -> int:
-    print("=== ARES-UAV one-command demo ===")
+    print("=== ARES-UAV Phase-1 waypoint demo ===")
     if not (SCRIPTS / "start_sitl_gui.sh").exists():
         print(f"[!] Missing {SCRIPTS / 'start_sitl_gui.sh'}")
+        sys.exit(1)
+    if not (ROOT / "missions" / "square_demo.json").exists():
+        print(f"[!] Missing {ROOT / 'missions' / 'square_demo.json'}")
         sys.exit(1)
 
     ensure_vcxsrv()
@@ -169,9 +164,9 @@ def main() -> int:
     sitl = start_sitl()
     try:
         wait_ready()
-        run_mavsdk()
+        run_mission()
         print()
-        print("SUCCESS: takeoff/land completed.")
+        print("SUCCESS: waypoint mission completed.")
         print("Close this window when finished watching Gazebo.")
         return 0
     finally:

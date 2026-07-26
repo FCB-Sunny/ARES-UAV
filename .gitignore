@@ -62,6 +62,8 @@ credentials.json
 
 # Local install clutter / one-off helpers (never commit)
 _*
+!__init__.py
+!**/__init__.py
 !scripts/
 *.exe
 *.msi
